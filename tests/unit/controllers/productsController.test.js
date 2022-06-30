@@ -29,4 +29,5 @@ describe('Ao chamar o productsController', () => {
       expect(res.json.calledWith([1, 2, 3])).to.be.equal(true);
     });
   });
+  
 });
