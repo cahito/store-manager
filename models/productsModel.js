@@ -19,6 +19,15 @@ const productsModel = {
     const [[itemById]] = await connection.execute(sql, [id]);
     return itemById;
   },
+
+  async create(name) {
+    const sql = `
+      INSERT INTO StoreManager.products (name)
+      VALUES (?)
+    `;
+    const [{ insertId }] = await connection.execute(sql, [name]);
+    return insertId;
+  },
 };
 
 module.exports = productsModel;
