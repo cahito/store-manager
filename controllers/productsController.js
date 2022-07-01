@@ -19,9 +19,16 @@ const productsController = {
   },
 
   async create(req, res) {
-    const { name } = req.body;
-    const newProduct = await productsService.create(name);
-    res.status(201).json(newProduct);
+    try {
+      const { name } = req.body;
+      productsService.validateNameExists(name);
+      productsService.validateNameLength(name);
+      const newProduct = await productsService.create(name);
+      res.status(201).json(newProduct);
+    } catch ({ message }) {
+      const status = (message === '"name" is required') ? 400 : 422;
+      res.status(status).json({ message });
+    }
   },
 };
 

@@ -1,6 +1,15 @@
 const productsModel = require('../models/productsModel');
 
 const productsService = {
+  
+  validateNameExists(name) {
+    if (!name) throw new Error('"name" is required');
+  },
+
+  validateNameLength(name) {
+    if (name.length < 5) throw new Error('"name" length must be at least 5 characters long');
+  },
+
   async list() {
     const list = await productsModel.list();
 
@@ -9,7 +18,7 @@ const productsService = {
 
   async getById(id) {
     const itemById = await productsModel.getById(id);
-    
+
     if (!itemById || itemById.length === 0) throw new Error('Product not found');
 
     return itemById;
