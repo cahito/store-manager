@@ -4,6 +4,13 @@ const NOT_FOUND = 'Product not found';
 const NAME_REQUIRED = '"name" is required';
 const NAME_LENGTH_SHORT = '"name" length must be at least 5 characters long';
 
+let status = 500;
+const getStatus = (message) => {
+  if (message === NOT_FOUND) status = 404;
+  if (message === NAME_REQUIRED) status = 400;
+  if (message === NAME_LENGTH_SHORT) status = 422;
+};
+
 const productsController = {
   async list(_req, res) {
     const list = await productsService.list();
@@ -31,7 +38,7 @@ const productsController = {
 
       res.status(201).json(newProduct);
     } catch ({ message }) {
-      const status = (message === NAME_REQUIRED) ? 400 : 422;
+      getStatus(message);
 
       res.status(status).json({ message });
     }
@@ -47,13 +54,7 @@ const productsController = {
 
       res.status(200).json(editedItem);
     } catch ({ message }) {
-      let status = 500;
-      const getStatus = () => {
-        if (message === NOT_FOUND) status = 404;
-        if (message === NAME_REQUIRED) status = 400;
-        if (message === NAME_LENGTH_SHORT) status = 422;
-      };
-      getStatus();
+      getStatus(message);
 
       res.status(status).json({ message });
     }
