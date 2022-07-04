@@ -1,5 +1,5 @@
 const productsService = require('../services/productsService');
-const getStatus = require('../middlewares/errorStatus');
+const { getStatus } = require('../middlewares/errorStatus');
 
 const productsController = {
   async list(_req, res) {
@@ -55,6 +55,13 @@ const productsController = {
     } catch ({ message }) {
       res.status(getStatus(message)).json({ message });
     }
+  },
+
+  async search(req, res) {
+    const { q } = req.query;
+    const outcome = await productsService.search(q);
+
+    res.status(200).json(outcome);
   },
 };
 

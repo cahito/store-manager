@@ -41,4 +41,31 @@ describe('Ao acessar os productsModel', () => {
     });
   });
 
+  describe('através do "edit"', () => {
+    it('altera o produto com o novo "name" passado', async () => {
+      const response = await ProductsModel.edit(1, nameToBeInserted);
+
+      expect(response).to.have.property('id', 1);
+      expect(response).to.have.property('name', nameToBeInserted);
+    });
+
+    it('não realiza a mudança se o "id" for inválido', async () => {
+      const response = await ProductsModel.edit(4, nameToBeInserted);
+
+      expect(response).to.be.equal(undefined);
+    });
+  });
+  describe('e através do "delete"', () => {
+    it('apaga o produto quando o "id" for válido', async () => {
+      const response = await ProductsModel.delete(1);
+
+      expect(response).to.be.equal(1);
+    });
+
+    it('não apaga o produto quando o "id" não existir na DB', async () => {
+      const response = await ProductsModel.delete(999);
+
+      expect(response).to.be.equal(0);
+    });
+  });
 });
