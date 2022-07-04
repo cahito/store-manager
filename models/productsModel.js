@@ -39,6 +39,15 @@ const productsModel = {
     const editedItem = await this.getById(id);
     return editedItem;
   },
+
+  async delete(id) {
+    const sql = `
+    DELETE FROM products
+    WHERE id=?
+    `;
+    const [{ affectedRows }] = await connection.query(sql, [id]);
+    return affectedRows;
+  },
 };
 
 module.exports = productsModel;

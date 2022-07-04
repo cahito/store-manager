@@ -36,6 +36,14 @@ const productsService = {
 
     return editedItem;
   },
+
+  async delete(id) {
+    const done = await productsModel.delete(id);
+
+    if (!done || done === 0) throw new Error('Product not found');
+    
+    return true;
+  },
 };
 
 module.exports = productsService;
