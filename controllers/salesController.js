@@ -1,4 +1,5 @@
 const salesService = require('../services/salesService');
+const { getStatus } = require('../middlewares/errorStatus');
 
 const salesController = {
   async list(_req, res) {
@@ -13,8 +14,8 @@ const salesController = {
       const itemById = await salesService.getById(id);
 
       res.status(200).json(itemById);
-    } catch (error) {
-      res.status(404).json({ message: error.message });
+    } catch ({ message }) {
+      res.status(getStatus(message)).json({ message });
     }
   },
 
@@ -30,6 +31,17 @@ const salesController = {
       res.status(status).json({ message });
     }
   }, */
+
+  async delete(req, res) {
+    try {
+      const { id } = req.params;
+      const done = await salesService.delete(id);
+
+      res.status(204).json(done);
+    } catch ({ message }) {
+      res.status(getStatus(message)).json({ message });
+    }
+  },
 };
 
 module.exports = salesController;

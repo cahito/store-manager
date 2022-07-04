@@ -28,6 +28,14 @@ const salesService = {
     const id = await salesModel.create(name);
     return { id, name };
   }, */
+
+  async delete(id) {
+    const done = await salesModel.delete(id);
+
+    if (!done || done === 0) throw new Error('Sale not found');
+
+    return true;
+  },
 };
 
 module.exports = salesService;
