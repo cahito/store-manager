@@ -28,6 +28,14 @@ const productsService = {
     const id = await productsModel.create(name);
     return { id, name };
   },
+
+  async edit(id, name) {
+    const editedItem = await productsModel.edit(id, name);
+
+    if (!editedItem || editedItem.length === 0) throw new Error('Product not found');
+
+    return editedItem;
+  },
 };
 
 module.exports = productsService;

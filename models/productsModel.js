@@ -28,6 +28,17 @@ const productsModel = {
     const [{ insertId }] = await connection.query(sql, [name]);
     return insertId;
   },
+
+  async edit(id, name) {
+    const sql = `
+      UPDATE products
+      SET name=?
+      WHERE id=?
+    `;
+    await connection.query(sql, [name, id]);
+    const editedItem = await this.getById(id);
+    return editedItem;
+  },
 };
 
 module.exports = productsModel;
