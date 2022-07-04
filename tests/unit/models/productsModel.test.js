@@ -1,11 +1,14 @@
 const { expect } = require('chai');
-const {
-  nameToBeInserted,
-} = require('../db_mock');
+const { nameToBeInserted } = require('../db_mock');
+const { runSeed } = require('../utilities');
 
 const ProductsModel = require('../../../models/productsModel');
 
 describe('Ao acessar os productsModel', () => {
+  beforeEach(async () => {
+    await runSeed();
+  });
+
   describe('e usar o "list"', () => {
     it('retorna um array com os todos produtos na DB', async () => {
       const response = await ProductsModel.list();
