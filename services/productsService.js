@@ -1,13 +1,18 @@
 const productsModel = require('../models/productsModel');
+const {
+  NAME_REQUIRED,
+  NAME_LENGTH_SHORT,
+  PRODUCT_NOT_FOUND,
+} = require('../middlewares/errorStatus');
 
 const productsService = {
   
   validateNameExists(name) {
-    if (!name) throw new Error('"name" is required');
+    if (!name) throw new Error(NAME_REQUIRED);
   },
 
   validateNameLength(name) {
-    if (name.length < 5) throw new Error('"name" length must be at least 5 characters long');
+    if (name.length < 5) throw new Error(NAME_LENGTH_SHORT);
   },
 
   async list() {
@@ -19,7 +24,7 @@ const productsService = {
   async getById(id) {
     const itemById = await productsModel.getById(id);
 
-    if (!itemById || itemById.length === 0) throw new Error('Product not found');
+    if (!itemById) throw new Error(PRODUCT_NOT_FOUND);
 
     return itemById;
   },
@@ -32,7 +37,7 @@ const productsService = {
   async edit(id, name) {
     const editedItem = await productsModel.edit(id, name);
 
-    if (!editedItem || editedItem.length === 0) throw new Error('Product not found');
+    if (!editedItem || editedItem.length === 0) throw new Error(PRODUCT_NOT_FOUND);
 
     return editedItem;
   },
@@ -40,7 +45,7 @@ const productsService = {
   async delete(id) {
     const done = await productsModel.delete(id);
 
-    if (!done || done === 0) throw new Error('Product not found');
+    if (!done || done === 0) throw new Error(PRODUCT_NOT_FOUND);
     
     return true;
   },
