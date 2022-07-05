@@ -1,11 +1,11 @@
 const mockProducts = [
   {
     id: 1,
-    name: 'Capa de levitação',
+    name: 'Capa de Levitação',
   },
   {
     id: 2,
-    name: 'Armadura tecnológica Mark XXV',
+    name: 'Armadura Tecnológica Mark XXV',
   },
   {
     id: 3,
