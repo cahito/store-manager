@@ -1,14 +1,46 @@
 const salesModel = require('../models/salesModel');
+const productsModel = require('../models/productsModel');
+const salesProductsModel = require('../models/salesProductsModel');
+const {
+  SALE_NOT_FOUND,
+  PRODUCT_ID_REQUIRED,
+  QUANTITY_REQUIRED,
+  QUANTITY_NOT_ZERO,
+  PRODUCT_NOT_FOUND,
+} = require('../middlewares/errorMessages');
+const ProductIdRequired = require('../errors/ProductIdRequired');
+const QuantityRequired = require('../errors/QuantityRequired');
+const QuantityNotZero = require('../errors/QuantityNotZero');
+const SaleNotFound = require('../errors/SaleNotFound');
+const ProductNotFound = require('../errors/ProductNotFound');
 
 const salesService = {
 
-  /* validateNameExists(name) {
-    if (!name) throw new Error('"name" is required');
+  validateProductId(productArray) {
+    productArray.forEach(({ productId }) => {
+      if (!productId) throw new ProductIdRequired(PRODUCT_ID_REQUIRED);
+    });
   },
 
-  validateNameLength(name) {
-    if (name.length < 5) throw new Error('"name" length must be at least 5 characters long');
-  }, */
+  async validateProductExists(productArray) {
+    const products = await productsModel.list();
+    productArray.forEach(({ productId }) => {
+      if (products
+        .every(({ id }) => id !== productId)) throw new ProductNotFound(PRODUCT_NOT_FOUND);
+    });
+  },
+
+  validateQuantityNotZero(productArray) {
+    productArray.forEach(({ quantity }) => {
+      if (quantity <= 0) throw new QuantityNotZero(QUANTITY_NOT_ZERO);
+    });
+  },
+
+  validateQuantity(productArray) {
+    productArray.forEach(({ quantity }) => {
+      if (!quantity) throw new QuantityRequired(QUANTITY_REQUIRED);
+    });
+  },
 
   async list() {
     const list = await salesModel.list();
@@ -19,20 +51,32 @@ const salesService = {
   async getById(id) {
     const saleById = await salesModel.getById(id);
 
-    if (!saleById || saleById.length === 0) throw new Error('Sale not found');
+    if (!saleById || saleById.length === 0) throw new SaleNotFound(SALE_NOT_FOUND);
 
     return saleById;
   },
 
-  /* async create(name) {
-    const id = await salesModel.create(name);
-    return { id, name };
-  }, */
+  async getNewSale(id) {
+    const newSale = await salesModel.getNewSale(id);
+
+    return newSale;
+  },
+
+  async create(productArray) {
+    const saleId = await salesModel.create();
+    console.log(saleId);
+    await Promise
+      .all(productArray
+        .map(({ productId, quantity }) => salesProductsModel.create(saleId, productId, quantity)));
+    const itemsSold = await this.getNewSale(saleId);
+
+    return { id: saleId, itemsSold };
+  },
 
   async delete(id) {
     const done = await salesModel.delete(id);
 
-    if (!done || done === 0) throw new Error('Sale not found');
+    if (!done || done === 0) throw new SaleNotFound(SALE_NOT_FOUND);
 
     return true;
   },

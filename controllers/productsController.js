@@ -1,5 +1,4 @@
 const productsService = require('../services/productsService');
-const { getStatus } = require('../middlewares/errorStatus');
 
 const productsController = {
   async list(_req, res) {
@@ -14,8 +13,7 @@ const productsController = {
       const itemById = await productsService.getById(id);
   
       res.status(200).json(itemById);
-    } catch ({ message }) {
-      const status = getStatus(message);
+    } catch ({ message, status }) {
       res.status(status).json({ message });
     }
   },
@@ -28,8 +26,7 @@ const productsController = {
       const newProduct = await productsService.create(name);
 
       res.status(201).json(newProduct);
-    } catch ({ message }) {
-      const status = getStatus(message);
+    } catch ({ message, status }) {
       res.status(status).json({ message });
     }
   },
@@ -43,8 +40,7 @@ const productsController = {
       const editedItem = await productsService.edit(id, name);
 
       res.status(200).json(editedItem);
-    } catch ({ message }) {
-      const status = getStatus(message);
+    } catch ({ message, status }) {
       res.status(status).json({ message });
     }
   },
@@ -55,8 +51,7 @@ const productsController = {
       const done = await productsService.delete(id);
 
       res.status(204).json(done);
-    } catch ({ message }) {
-      const status = getStatus(message);
+    } catch ({ message, status }) {
       res.status(status).json({ message });
     }
   },

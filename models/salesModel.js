@@ -9,7 +9,7 @@ const salesModel = {
       ON s.id=sp.sale_id
       ORDER BY 'saleId', 'productId'
     `;
-    const [list] = await connection.query(sql);
+    const [list] = await connection.execute(sql);
     return list;
   },
 
@@ -22,25 +22,38 @@ const salesModel = {
       WHERE sp.sale_id=?
       ORDER BY 'productId'
     `;
-    const [itemById] = await connection.query(sql, [Number(id)]);
+    const [itemById] = await connection.execute(sql, [Number(id)]);
     return itemById;
   },
 
-  /* async create(name) {
+  async create() {
     const sql = `
-      INSERT INTO StoreManager.sales (name)
-      VALUES (?)
+      INSERT INTO StoreManager.sales (date)
+      VALUES (NOW())
     `;
-    const [{ insertId }] = await connection.query(sql, [name]);
+    const [{ insertId }] = await connection.execute(sql);
     return insertId;
-  }, */
+  },
+
+  async getNewSale(id) {
+    const sql = `
+      SELECT sp.product_id AS 'productId', sp.quantity
+      FROM StoreManager.sales_products AS sp
+      INNER JOIN StoreManager.sales AS s
+      ON sp.sale_id=s.id
+      WHERE sp.sale_id=?
+      ORDER BY 'productId'
+    `;
+    const [newSale] = await connection.execute(sql, [id]);
+    return newSale;
+  },
 
   async delete(id) {
     const sql = `
     DELETE FROM sales
     WHERE id=?
     `;
-    const [{ affectedRows }] = await connection.query(sql, [id]);
+    const [{ affectedRows }] = await connection.execute(sql, [id]);
     return affectedRows;
   },
 };
