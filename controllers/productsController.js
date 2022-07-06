@@ -15,7 +15,8 @@ const productsController = {
   
       res.status(200).json(itemById);
     } catch ({ message }) {
-      res.status(getStatus(message)).json({ message });
+      const status = getStatus(message);
+      res.status(status).json({ message });
     }
   },
 
@@ -28,7 +29,8 @@ const productsController = {
 
       res.status(201).json(newProduct);
     } catch ({ message }) {
-      res.status(getStatus(message)).json({ message });
+      const status = getStatus(message);
+      res.status(status).json({ message });
     }
   },
 
@@ -42,7 +44,8 @@ const productsController = {
 
       res.status(200).json(editedItem);
     } catch ({ message }) {
-      res.status(getStatus(message)).json({ message });
+      const status = getStatus(message);
+      res.status(status).json({ message });
     }
   },
 
@@ -53,7 +56,8 @@ const productsController = {
 
       res.status(204).json(done);
     } catch ({ message }) {
-      res.status(getStatus(message)).json({ message });
+      const status = getStatus(message);
+      res.status(status).json({ message });
     }
   },
 
