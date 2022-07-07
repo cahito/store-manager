@@ -8,6 +8,18 @@ const salesProductsModel = {
     `;
     await connection.query(sql, [saleId, productId, quantity]);
   },
+
+  async edit(id, productId, quantity) {
+    const sql = `
+      UPDATE StoreManager.sales_products
+      SET product_id=?, quantity=?
+      WHERE sale_id=? AND product_id=?
+    `;
+    const editedSale = await connection
+      .query(sql, [productId, quantity, id, productId]);
+
+    return editedSale;
+  },
 };
 
 module.exports = salesProductsModel;

@@ -21,7 +21,6 @@ const salesController = {
   async create(req, res) {
     try {
       const productArray = req.body;
-      console.log(productArray);
       salesService.validateProductId(productArray);
       salesService.validateQuantityNotZero(productArray);
       salesService.validateQuantity(productArray);
@@ -40,6 +39,23 @@ const salesController = {
       const done = await salesService.delete(id);
 
       res.status(204).json(done);
+    } catch ({ message, status }) {
+      res.status(status).json({ message });
+    }
+  },
+
+  async edit(req, res) {
+    try {
+      const { id } = req.params;
+      const productArray = req.body;
+      console.log('array', productArray, 'id', id);
+      salesService.validateProductId(productArray);
+      salesService.validateQuantityNotZero(productArray);
+      salesService.validateQuantity(productArray);
+      await salesService.validateProductExists(productArray);
+      const editedSale = await salesService.edit(id, productArray);
+
+      res.status(200).json(editedSale);
     } catch ({ message, status }) {
       res.status(status).json({ message });
     }

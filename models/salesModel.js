@@ -35,7 +35,7 @@ const salesModel = {
     return insertId;
   },
 
-  async getNewSale(id) {
+  async getSale(id) {
     const sql = `
       SELECT sp.product_id AS 'productId', sp.quantity
       FROM StoreManager.sales_products AS sp

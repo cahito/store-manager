@@ -56,10 +56,10 @@ const salesService = {
     return saleById;
   },
 
-  async getNewSale(id) {
-    const newSale = await salesModel.getNewSale(id);
+  async getSale(id) {
+    const sale = await salesModel.getSale(id);
 
-    return newSale;
+    return sale;
   },
 
   async create(productArray) {
@@ -68,7 +68,7 @@ const salesService = {
     await Promise
       .all(productArray
         .map(({ productId, quantity }) => salesProductsModel.create(saleId, productId, quantity)));
-    const itemsSold = await this.getNewSale(saleId);
+    const itemsSold = await this.getSale(saleId);
 
     return { id: saleId, itemsSold };
   },
@@ -79,6 +79,18 @@ const salesService = {
     if (!done || done === 0) throw new SaleNotFound(SALE_NOT_FOUND);
 
     return true;
+  },
+
+  async edit(id, productArray) {
+    const saleToEdit = await this.getSale(id);
+    if (!saleToEdit || saleToEdit.length === 0) throw new SaleNotFound(SALE_NOT_FOUND);
+
+    await Promise
+      .all(productArray
+        .map(({ productId, quantity }) => salesProductsModel.edit(id, productId, quantity)));
+    const itemsUpdated = await this.getSale(id);
+
+    return { saleId: id, itemsUpdated };
   },
 };
 
