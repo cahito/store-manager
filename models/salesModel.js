@@ -50,7 +50,7 @@ const salesModel = {
 
   async delete(id) {
     const sql = `
-    DELETE FROM sales
+    DELETE FROM StoreManager.sales
     WHERE id=?
     `;
     const [{ affectedRows }] = await connection.execute(sql, [id]);

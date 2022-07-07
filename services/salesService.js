@@ -64,7 +64,6 @@ const salesService = {
 
   async create(productArray) {
     const saleId = await salesModel.create();
-    console.log(saleId);
     await Promise
       .all(productArray
         .map(({ productId, quantity }) => salesProductsModel.create(saleId, productId, quantity)));

@@ -48,7 +48,6 @@ const salesController = {
     try {
       const { id } = req.params;
       const productArray = req.body;
-      console.log('array', productArray, 'id', id);
       salesService.validateProductId(productArray);
       salesService.validateQuantityNotZero(productArray);
       salesService.validateQuantity(productArray);
