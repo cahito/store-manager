@@ -22,7 +22,7 @@ const salesModel = {
       WHERE sp.sale_id=?
       ORDER BY 'productId'
     `;
-    const [itemById] = await connection.execute(sql, [Number(id)]);
+    const [itemById] = await connection.execute(sql, [id]);
     return itemById;
   },
 

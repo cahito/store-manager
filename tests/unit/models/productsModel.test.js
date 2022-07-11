@@ -1,11 +1,13 @@
 const { expect } = require('chai');
-const { nameToBeInserted } = require('../db_mock');
-const { runSeed } = require('../utilities');
+const sinon = require('sinon');
+const { nameToBeInserted } = require('../../db_mock');
+const { runSeed } = require('../../utilities');
 
 const ProductsModel = require('../../../models/productsModel');
 
 describe('Ao acessar os productsModel', () => {
-  beforeEach(async () => {
+  afterEach(async  () => {
+    sinon.restore();
     await runSeed();
   });
 
@@ -50,11 +52,12 @@ describe('Ao acessar os productsModel', () => {
     });
 
     it('não realiza a mudança se o "id" for inválido', async () => {
-      const response = await ProductsModel.edit(4, nameToBeInserted);
+      const response = await ProductsModel.edit(999, nameToBeInserted);
 
       expect(response).to.be.equal(undefined);
     });
   });
+
   describe('e através do "delete"', () => {
     it('apaga o produto quando o "id" for válido', async () => {
       const response = await ProductsModel.delete(1);

@@ -6,12 +6,12 @@ use(chaiAsPromised);
 
 const productsService = require('../../../services/productsService');
 const productsModel = require('../../../models/productsModel');
-const { mockProducts, nameToBeInserted } = require('../db_mock');
+const { mockProducts, nameToBeInserted } = require('../../db_mock');
 const {
   PRODUCT_NOT_FOUND,
   NAME_REQUIRED,
   NAME_LENGTH_SHORT
-} = require('../../../middlewares/errorStatus');
+} = require('../../../middlewares/errorMessages');
 
 describe('Ao chamar o productsService', () => {
   afterEach(() => {
@@ -137,7 +137,7 @@ describe('Ao chamar o productsService', () => {
     });
 
     it('lança um erro se o "id" não for válido', () => {
-      sinon.stub(productsModel, 'getById').withArgs(999).resolves();
+      sinon.stub(productsModel, 'delete').withArgs(999).resolves();
 
       return expect(productsService.delete(999)).to.be.rejectedWith(PRODUCT_NOT_FOUND);
     });

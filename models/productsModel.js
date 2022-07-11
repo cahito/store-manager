@@ -6,7 +6,7 @@ const productsModel = {
       SELECT *
       FROM StoreManager.products
     `;
-    const [list] = await connection.query(sql);
+    const [list] = await connection.execute(sql);
     return list;
   },
 
@@ -16,7 +16,7 @@ const productsModel = {
       FROM StoreManager.products
       WHERE id=?
     `;
-    const [[itemById]] = await connection.query(sql, [id]);
+    const [[itemById]] = await connection.execute(sql, [id]);
     return itemById;
   },
 
@@ -25,7 +25,7 @@ const productsModel = {
       INSERT INTO StoreManager.products (name)
       VALUES (?)
     `;
-    const [{ insertId }] = await connection.query(sql, [name]);
+    const [{ insertId }] = await connection.execute(sql, [name]);
     return insertId;
   },
 
@@ -35,7 +35,7 @@ const productsModel = {
       SET name=?
       WHERE id=?
     `;
-    await connection.query(sql, [name, id]);
+    await connection.execute(sql, [name, id]);
     const editedItem = await this.getById(id);
     return editedItem;
   },
@@ -45,7 +45,7 @@ const productsModel = {
     DELETE FROM StoreManager.products
     WHERE id=?
     `;
-    const [{ affectedRows }] = await connection.query(sql, [id]);
+    const [{ affectedRows }] = await connection.execute(sql, [id]);
     return affectedRows;
   },
 };

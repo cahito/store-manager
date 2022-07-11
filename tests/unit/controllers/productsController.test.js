@@ -2,25 +2,28 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 
 const productsController = require('../../../controllers/productsController');
-const { PRODUCT_NOT_FOUND, NAME_REQUIRED, NAME_LENGTH_SHORT } = require('../../../middlewares/errorStatus');
 const productsModel = require('../../../models/productsModel');
 const productsService = require('../../../services/productsService');
 const {
+  PRODUCT_NOT_FOUND,
+  NAME_REQUIRED,
+  NAME_LENGTH_SHORT
+} = require('../../../middlewares/errorMessages');
+const {
   mockProducts,
   nameToBeInserted,
-} = require('../db_mock');
+} = require('../../db_mock');
+const { runSeed } = require('../../utilities');
 
 describe('Ao chamar o productsController', () => {
-  afterEach(() => {
+  afterEach(async () => {
     sinon.restore();
+    await runSeed();
   });
 
   describe('#list', () => {
-    beforeEach(() => {
+    before(() => {
       sinon.stub(productsService, 'list').resolves(mockProducts);
-    });
-    afterEach(() => {
-      sinon.restore();
     });
 
     it('retorna um array com os produtos', async () => {
@@ -60,9 +63,9 @@ describe('Ao chamar o productsController', () => {
 
     it('recebe um erro se o "id" não existir no DB', async () => {
       sinon
-        .stub(productsService, 'getById')
+        .stub(productsModel, 'getById')
         .withArgs(999)
-        .throws(() => new Error(PRODUCT_NOT_FOUND));
+        .resolves(undefined);
       const req = {};
       const res = {};
 
@@ -154,7 +157,7 @@ describe('Ao chamar o productsController', () => {
       res.json = sinon.stub();
 
       req.params = { id: 3 };
-      req.body = { name: 'Bermuda cinza'};
+      req.body = { name: 'Bermuda cinza' };
 
       await productsController.edit(req, res);
 
@@ -172,7 +175,7 @@ describe('Ao chamar o productsController', () => {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub();
 
-      req.params = { id: 4 };
+      req.params = { id: 999 };
       req.body = { name: 'Manopla Enferrujada' };
 
       await productsController.edit(req, res);
@@ -187,6 +190,10 @@ describe('Ao chamar o productsController', () => {
 
   describe('#delete', () => {
     it('valida que é possível deletar um produto com sucesso', async () => {
+      sinon
+        .stub(productsModel, 'delete')
+        .withArgs(2)
+        .resolves(1);
       const req = {};
       const res = {};
 

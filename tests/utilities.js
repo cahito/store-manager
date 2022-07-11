@@ -1,10 +1,10 @@
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
-const connection = require('../../models/connection');
+const connection = require('../models/connection');
 const { cwd } = process;
 
 const runSql = (file) => async () => {
-  const sql = fs.readFileSync(file, 'utf8');
+  const sql = await fs.readFile(file, 'utf8');
   await connection.query(sql);
 };
 

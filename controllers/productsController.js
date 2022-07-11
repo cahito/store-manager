@@ -38,9 +38,10 @@ const productsController = {
       productsService.validateNameExists(name);
       productsService.validateNameLength(name);
       const editedItem = await productsService.edit(id, name);
-
+      console.log('edited item ok', editedItem);
       res.status(200).json(editedItem);
     } catch ({ message, status }) {
+      console.log('error message edit', status, message);
       res.status(status).json({ message });
     }
   },
