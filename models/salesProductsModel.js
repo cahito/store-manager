@@ -17,7 +17,6 @@ const salesProductsModel = {
     `;
     const editedSale = await connection
       .query(sql, [productId, quantity, id, productId]);
-
     return editedSale;
   },
 };

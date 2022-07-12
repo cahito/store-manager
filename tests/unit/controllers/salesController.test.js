@@ -15,13 +15,13 @@ const {
   mockSales,
   saleToBeInserted,
   saleCreated,
+  mockProducts,
 } = require('../../db_mock');
-const { runSeed } = require('../../utilities');
+const productsModel = require('../../../models/productsModel');
 
 describe('Ao chamar o salesController', () => {
   afterEach(async () => {
     sinon.restore();
-    await runSeed();
   });
 
   describe('#list', () => {
@@ -92,6 +92,8 @@ describe('Ao chamar o salesController', () => {
 
   describe('#create', () => {
     it('retorna um objeto com a nova venda adicionada e seu "id"', async () => {
+      sinon.stub(productsModel, 'list').resolves(mockProducts);
+      sinon.stub(salesService, 'create').withArgs(saleToBeInserted).resolves(saleCreated);
       const req = {};
       const res = {};
 
@@ -183,6 +185,7 @@ describe('Ao chamar o salesController', () => {
 
     it('valida que não é possível realizar operações em uma venda com o '
       + 'campo "productId" inexistente, em uma requisição com um único item', async () => {
+        sinon.stub(productsModel, 'list').resolves(mockProducts);
         const req = {};
         const res = {};
 
@@ -202,6 +205,7 @@ describe('Ao chamar o salesController', () => {
 
     it('valida que não é possível realizar operações em uma venda com o '
       + 'campo "productId" inexistente, em uma requisição com vários items', async () => {
+        sinon.stub(productsModel, 'list').resolves(mockProducts);
         const req = {};
         const res = {};
 
@@ -222,6 +226,7 @@ describe('Ao chamar o salesController', () => {
 
   describe('#delete', () => {
     it('valida que é possível deletar uma venda com sucesso', async () => {
+      sinon.stub(salesModel, 'delete').withArgs(2).resolves(1);
       const req = {};
       const res = {};
 
@@ -238,13 +243,14 @@ describe('Ao chamar o salesController', () => {
     });
 
     it('valida que não é possível deletar uma venda que não existe', async () => {
+      sinon.stub(salesModel, 'delete').withArgs(999).resolves();
       const req = {};
       const res = {};
 
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub();
 
-      req.params = { id: 4 };
+      req.params = { id: 999 };
       req.body = {};
 
       await salesController.delete(req, res);
@@ -258,6 +264,14 @@ describe('Ao chamar o salesController', () => {
 
   describe('#edit', () => {
     it('valida que é possível alterar uma venda com sucesso', async () => {
+      sinon.stub(productsModel, 'list').resolves(mockProducts);
+      sinon
+        .stub(salesService, 'edit')
+        .withArgs(1, saleToBeInserted)
+        .resolves({
+          "saleId": 1,
+          "itemsUpdated": saleToBeInserted,
+        });
       const req = {};
       const res = {};
 
@@ -277,13 +291,16 @@ describe('Ao chamar o salesController', () => {
     });
 
     it('valida que não é possível alterar uma venda que não existe', async () => {
+      sinon.stub(productsModel, 'list').resolves(mockProducts);
+      sinon.stub(salesService, 'getSale').withArgs(999).resolves();
+      // sinon.stub(salesService, 'edit').withArgs(999, saleToBeInserted).resolves(saleCreated);
       const req = {};
       const res = {};
 
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub();
 
-      req.params = { id: 4 };
+      req.params = { id: 999 };
       req.body = saleToBeInserted;
 
       await salesController.edit(req, res);

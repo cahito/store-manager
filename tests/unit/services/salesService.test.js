@@ -10,13 +10,12 @@ const {
 const {
   mockSales,
   saleToBeInserted,
+  getSaleResult,
 } = require('../../db_mock');
-const { runSeed } = require('../../utilities');
 
 describe('Ao chamar o salesService', () => {
   afterEach(async () => {
     sinon.restore();
-    await runSeed();
   });
 
   describe('#list', () => {
@@ -49,6 +48,16 @@ describe('Ao chamar o salesService', () => {
       sinon.stub(salesModel, 'getById').withArgs(999).resolves();
 
       return expect(salesService.getById(999)).to.be.rejectedWith(SALE_NOT_FOUND);
+    });
+  });
+
+  describe('#getSale', () => {
+    it('valida o funcionamento da função interna getSale', async () => {
+      sinon.stub(salesModel, 'getSale').withArgs(2).resolves(getSaleResult)
+
+      const result = await salesService.getSale(2)
+
+      expect(result).to.be.eql(getSaleResult);
     });
   });
 

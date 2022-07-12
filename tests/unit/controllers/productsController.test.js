@@ -13,12 +13,10 @@ const {
   mockProducts,
   nameToBeInserted,
 } = require('../../db_mock');
-const { runSeed } = require('../../utilities');
 
 describe('Ao chamar o productsController', () => {
   afterEach(async () => {
     sinon.restore();
-    await runSeed();
   });
 
   describe('#list', () => {
@@ -150,6 +148,10 @@ describe('Ao chamar o productsController', () => {
 
   describe('#edit', () => {
     it('retorna um objeto com o item alterado e seu "id"', async () => {
+      sinon
+        .stub(productsModel, 'edit')
+        .withArgs(3)
+        .resolves({ id: 3, name: nameToBeInserted });
       const req = {};
       const res = {};
 
@@ -157,18 +159,22 @@ describe('Ao chamar o productsController', () => {
       res.json = sinon.stub();
 
       req.params = { id: 3 };
-      req.body = { name: 'Bermuda cinza' };
+      req.body = { name: nameToBeInserted };
 
       await productsController.edit(req, res);
 
       expect(res.status.calledWith(200)).to.be.eq(true);
       expect(res.json.calledWith({
         id: 3,
-        name: 'Bermuda cinza',
+        name: nameToBeInserted,
       })).to.be.eq(true);
     });
 
     it('retorna que não é possível alterar um produto que não existe', async () => {
+      sinon
+        .stub(productsModel, 'edit')
+        .withArgs(999)
+        .resolves();
       const req = {};
       const res = {};
 
@@ -210,13 +216,17 @@ describe('Ao chamar o productsController', () => {
     });
 
     it('retorna que não é possível deletar um produto que não existe', async () => {
+      sinon
+        .stub(productsModel, 'delete')
+        .withArgs(999)
+        .resolves(0);
       const req = {};
       const res = {};
 
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub();
 
-      req.params = { id: 4 };
+      req.params = { id: 999 };
       req.body = {};
 
       await productsController.delete(req, res);
